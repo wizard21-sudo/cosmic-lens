@@ -11,7 +11,7 @@ fetch(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}&date=${date}`)
 
     // Handle image, Youtube iframe, and detect video file cases
     if (data.media_type === "image") {
-        media = `<img src="${data.url}" alt="${data.title}" />`;
+      media = `<img src="${data.url}" alt="${data.title}" />`;
     } else if (data.url.includes("youtube")) {
       media = `<iframe src="${data.url}" frameborder="0" allowfullscreen></iframe>`;
     } else {
@@ -24,8 +24,8 @@ fetch(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}&date=${date}`)
       ${media}
       <p>${data.explanation}</p>
     `;
-  });
+  })
   .catch((err) => {
-    // Catch errors (network down, invalid API key, etc.) 
+    // Catch errors (network down, invalid API key, etc.)
     document.querySelector("#app").innerHTML = `<p>Error: ${err}</p>`;
-    });
+  });
