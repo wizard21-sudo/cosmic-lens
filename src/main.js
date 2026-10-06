@@ -1,5 +1,5 @@
 const date = document.querySelector("#datepicker"). value;
-const apiKey = import.meta.env.VITE_API_KEY;
+const apiKey = import.meta.env.VITE_API_KEY || "DEMO_KEY"; 
 
 // Function to fetch APOD data safely
 function fetchAPOD(selectedDate) {
