@@ -3,25 +3,86 @@ body {
     margin: 0;
     min-height: 100vh;
     position: relative;
-    background-color: #f5f5f5;
+    /* Dark cosmic canvas */
+    background-color: #0b0d19;
     color: #ffffff;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
     box-sizing: border-box;
+
+    /* Starry Background Effects */
+    background-image:
+      radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 160px 120px, #ffddaa, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 230px 190px, #aaddff, rgba(0,0,0,0));
+    background-repeat: repeat;
+    background-size: 300px 300px;
+    animation: twinkle 4s infinite alternate ease-in-out;
+}
+
+/* Twinkle Animation for Stars */
+@keyframes twinkle {
+    0% {
+      opacity: 0.6;
+    }
+    100% {
+      opacity: 1;
+    }
 }
 
 /* Typography */
 h1 {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Oswald', 'Orbitron', sans-serif;
     text-align: center;
+    color: #61dafb; /* Neon blue glow tint */
+    text-shadow: 0 0 10px rgba(97, 218, 251, 0.5);
 }
 
 p {
     font-family: 'Black Ops One', sans-serif;
     max-width: 800px;
     line-height: 1.6;
+    color: #e0e6ed;
+}
+
+/* Space-Themed Date Picker Input */
+#datepicker {
+    padding: 8px 14px;
+    font-size: 1 rem;
+    border: 2px solid #61dafb; /* Neon blue border */
+    border-radius: 8px;
+    background-color: #1a1d36; /* Dark cosmic input background */
+    color: #61dafb;
+    outline: none;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(97, 218, 251, 0.2);
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+#datepicker:hover {
+    box-shadow: 0 0 15px rgba(97, 218, 251, 0.6);
+}
+
+/* Media styling (Images, Videos, Iframes) */
+#app img,
+#app iframe,
+#app video {
+    max-width: 100%;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    transition: transform 0.3s ease;
+}
+
+#app img:hover {
+    transform: scale(1.01);
 }
 
 /* Decorative Side Strips */
