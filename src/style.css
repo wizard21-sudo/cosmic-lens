@@ -3,7 +3,6 @@ body {
     margin: 0;
     min-height: 100vh;
     position: relative;
-    /* Dark cosmic canvas */
     background-color: #0b0d19;
     color: #ffffff;
     display: flex;
@@ -12,80 +11,173 @@ body {
     padding: 20px;
     box-sizing: border-box;
 
-    /* Starry Background Effects */
     background-image:
       radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
       radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
       radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
       radial-gradient(2px 2px at 160px 120px, #ffddaa, rgba(0,0,0,0)),
       radial-gradient(1.5px 1.5px at 230px 190px, #aaddff, rgba(0,0,0,0));
+
     background-repeat: repeat;
     background-size: 300px 300px;
     animation: twinkle 4s infinite alternate ease-in-out;
 }
 
-/* Twinkle Animation for Stars */
+
+/* Star Twinkle Animation */
 @keyframes twinkle {
     0% {
-      opacity: 0.6;
+        opacity: 0.6;
     }
+
     100% {
-      opacity: 1;
+        opacity: 1;
     }
 }
 
-/* Typography */
+
+/* Main Heading */
 h1 {
     font-family: 'Oswald', 'Orbitron', sans-serif;
     text-align: center;
-    color: #61dafb; /* Neon blue glow tint */
+    color: #61dafb;
     text-shadow: 0 0 10px rgba(97, 218, 251, 0.5);
 }
 
+
+/* Description Text */
 p {
     font-family: 'Black Ops One', sans-serif;
-    max-width: 800px;
-    line-height: 1.6;
+    max-width: 900px;
+    width: 90%;
+    margin: 25px auto;
+    line-height: 1.7;
     color: #e0e6ed;
+    text-align: center;
+    box-sizing: border-box;
 }
 
-/* Space-Themed Date Picker Input */
+
+/* Date Picker */
 #datepicker {
     padding: 8px 14px;
-    font-size: 1 rem;
-    border: 2px solid #61dafb; /* Neon blue border */
+    font-size: 1rem;
+    border: 2px solid #61dafb;
     border-radius: 8px;
-    background-color: #1a1d36; /* Dark cosmic input background */
+    background-color: #1a1d36;
     color: #61dafb;
     outline: none;
     font-family: 'Orbitron', sans-serif;
-    font-size: 1rem;
     cursor: pointer;
     box-shadow: 0 0 10px rgba(97, 218, 251, 0.2);
     transition: all 0.3s ease;
     margin-bottom: 20px;
 }
 
+
+/* Date Picker Hover */
 #datepicker:hover {
     box-shadow: 0 0 15px rgba(97, 218, 251, 0.6);
 }
 
-/* Media styling (Images, Videos, Iframes) */
+
+/* NASA Image / Video */
 #app img,
 #app iframe,
 #app video {
+    display: block;
     max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
     border-radius: 12px;
     border: 2px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
     transition: transform 0.3s ease;
+    box-sizing: border-box;
 }
 
+
+/* Image Hover */
 #app img:hover {
     transform: scale(1.01);
 }
 
-/* Decorative Side Strips */
+
+/* Main App Container */
+#app {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 0 30px;
+}
+
+
+/* App Heading */
+#app h1 {
+    text-align: center;
+    margin: 25px auto;
+}
+
+
+/* Controls */
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+
+/* Random NASA Button */
+#randomBtn {
+    padding: 8px 14px;
+    font-size: 1rem;
+    border: 2px solid #61dafb;
+    border-radius: 8px;
+    background-color: #1a1d36;
+    color: #61dafb;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(97, 218, 251, 0.2);
+    transition: all 0.3s ease;
+}
+
+
+/* Random Button Hover */
+#randomBtn:hover {
+    background-color: #61dafb;
+    color: #0b0d19;
+    box-shadow: 0 0 15px rgba(97, 218, 251, 0.6);
+}
+
+
+/* Random Button Click */
+#randomBtn:active {
+    transform: scale(0.97);
+}
+
+
+/* Disabled Random Button */
+#randomBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* Error Message */
+.error {
+    color: #ff3333;
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: bold;
+}
+
+
+/* Red / White Side Borders */
 body::before,
 body::after {
     content: '';
@@ -94,13 +186,21 @@ body::after {
     top: 0;
     bottom: 0;
     width: 50px;
-    background-color: #ff007f; /* Accent side color */
+    background-color: #ff007f;
 }
 
-/* Left Zig-zag */
+
+/* Left Border */
 body::before {
     left: 0;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        100% 100%,
+        0 100%
+    );
+
     background-image: repeating-linear-gradient(
         45deg,
         #ff007f,
@@ -110,10 +210,18 @@ body::before {
     );
 }
 
-/* Right Zig-zag */
+
+/* Right Border */
 body::after {
     right: 0;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        100% 100%,
+        0 100%
+    );
+
     background-image: repeating-linear-gradient(
         45deg,
         #ff007f,
@@ -123,10 +231,21 @@ body::after {
     );
 }
 
-/* Responsive Media Queries */
+
+/* Mobile Screen */
 @media (max-width: 600px) {
+
     body::before,
     body::after {
-      display: none; 
+        display: none;
+    }
+
+    #app {
+        padding: 0 15px;
+    }
+
+    p {
+        width: 100%;
+        font-size: 14px;
     }
 }
