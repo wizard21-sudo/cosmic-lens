@@ -9,7 +9,7 @@ Users can explore NASA's APOD archive by selecting a date or discover a differen
 ## 🚀 Live Demo
 
 🔗 **Live Website:**  
-https://YOUR-USERNAME.github.io/YOUR-REPOSITORY-NAME/
+https://wizard21-sudo.github.io/cosmic-lens/
 
 ## ✨ Features
 
