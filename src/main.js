@@ -333,12 +333,3 @@ randomBtn.addEventListener(
 // Load today's APOD
 fetchAPOD(today);
 
-// Greeting Popup Close Button
-const closeToastBtn = document.getElementsById('close-toast');
-const greetingPopup = document.getElementarById('greeting-popup');
-
-if (closeToastBtn && greetingPopup) {
-    closeToastBtn.addEventListener('click', () => {
-        greetingPopup.style.display = 'none';
-    });
-}

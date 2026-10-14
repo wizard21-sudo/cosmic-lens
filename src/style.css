@@ -248,6 +248,7 @@ body::after {
         width: 100%;
         font-size: 14px;
     }
+}
 
     /* Greeting Popup / Toast */
     .toast-popup {
@@ -282,4 +283,4 @@ body::after {
         color: #a8daef;
     }
 
-}
+
