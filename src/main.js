@@ -8,9 +8,7 @@ let usedRandomDates = new Set();
 let randomLoading = false;
 
 
-// ============================
-// TODAY
-// ============================
+// Gets today's date so we can load the default picture
 
 function getToday() {
     const today = new Date();
@@ -23,10 +21,8 @@ function getToday() {
 }
 
 
-// ============================
-// CONVERT YYYY-MM-DD
-// TO NASA YYMMDD
-// ============================
+
+// NASA's API wants the date formatted weirdly, fix that here
 
 function convertToNASAPath(date) {
     const [year, month, day] = date.split("-");
@@ -35,9 +31,8 @@ function convertToNASAPath(date) {
 }
 
 
-// ============================
-// DISPLAY APOD
-// ============================
+
+// Throws the image onto the page
 
 function displayAPOD(data) {
 
@@ -103,9 +98,9 @@ function displayAPOD(data) {
 }
 
 
-// ============================
-// FETCH APOD BY DATE
-// ============================
+
+// Talks to NASA's server to grab data for specific day
+
 
 async function fetchAPOD(selectedDate) {
 
@@ -153,9 +148,9 @@ async function fetchAPOD(selectedDate) {
 }
 
 
-// ============================
-// GET RANDOM DATE
-// ============================
+
+// Rolls a random date between back when NASA started and today
+
 
 function getRandomDate() {
 
@@ -186,9 +181,7 @@ function getRandomDate() {
 }
 
 
-// ============================
-// RANDOM NASA IMAGE
-// ============================
+// Stops spam-clicking the random button while it loads
 
 async function fetchRandomAPOD() {
 
@@ -296,9 +289,8 @@ async function fetchRandomAPOD() {
 }
 
 
-// ============================
-// DATE PICKER
-// ============================
+// Handles when someone picks a date from the calender
+
 
 const today = getToday();
 
