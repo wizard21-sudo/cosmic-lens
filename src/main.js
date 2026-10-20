@@ -47,41 +47,39 @@ function displayAPOD(data) {
 
     let media = "";
 
-    if (data.media_type === "image" && data.hdurl) {
+    if (data.media_type == "video" && (data.url.includes("youtube") || data.url.includes("youtu.be"))) {
+        let videoUrl = data.url;
+        if (videoUrl.includes("watch?v=")) {
+            videoUrl = videoUrl.replace("watch?v=", "embed/");
+        } else if (videoUrl.includes("youtu.be/")) {
+            videoUrl = videoUrl.replace("youtu.be/", "www.youtube.com/embed/");
+        }
 
         media = `
-            <img
-                src="${data.hdurl}"
-                alt="${data.alt || data.title}"
-            >
+            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 20px 0;">
+                <iframe
+                    src="${videoUrl}"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+                    allowfullscreen>
+                </iframe>
+            </div>
         `;
-
-    } else if (data.media_type === "video") {
-
+    } else if (data.media_type === "audio" || data.media_type === "other" || data.media_type === "video") {
         media = `
-            <iframe
-                src="${data.url}"
-                width="900"
-                height="500"
-                frameborder="0"
-                allowfullscreen>
-            </iframe>
+            <div style="text-align: center; padding: 30px; background: rgba(255,255,255,0.05); border-radius: 8px; margin: 20px 0;">
+                 <p style="font-size: 1.2rem; margin-bottom: 15px;"> This day features a space audio / sonification file.</p>
+                 <a href="${data.url}" target="_blank" style="color: #61dafb; text-decoration: underline;">Listen to Audio / Open NASA Link</a>
+            </div>
         `;
-
-    } else if (data.hdurl) {
-
-        media = `
-            <img
-                src="${data.hdurl}"
-                alt="${data.alt || data.title}"
-            >
-        `;
-
     } else {
-
-        media = `
-            <p>No image available for this APOD.</p>
-        `;
+        const imageUrl = data.hdurl || data.url;
+        if (imageUrl) {
+            media = `<img src="${imageUrl}" alt="${data.alt || data.title}" style="max-width: 100%; border-radius: 8px;">`;
+        } else {
+            media = `<p>No visual media available for this APOD date.</p>`;
+        }
+        
+           
     }
 
     app.innerHTML = `
@@ -96,7 +94,6 @@ function displayAPOD(data) {
         </p>
     `;
 }
-
 
 
 // Talks to NASA's server to grab data for specific day
