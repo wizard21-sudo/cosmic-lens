@@ -2,323 +2,164 @@ const datePicker = document.getElementById("datepicker");
 const randomBtn = document.getElementById("randomBtn");
 const app = document.getElementById("app");
 
-const API_URL = "https://science.nasa.gov/wp-json/wp/v2/apod-basic";
+const BASE_API = "https://science.nasa.gov/wp-json/wp/v2/apod-basic";
 
-let usedRandomDates = new Set();
-let randomLoading = false;
+let seenRolls = new Set();
+let isBusy = false;
 
-
-// Gets today's date so we can load the default picture
-
-function getToday() {
-    const today = new Date();
-
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
+function getCurrentDate() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
 }
 
-
-
-// NASA's API wants the date formatted weirdly, fix that here
-
-function convertToNASAPath(date) {
-    const [year, month, day] = date.split("-");
-
-    return `${year.slice(2)}${month}${day}`;
+function formatApiDate(dateStr) {
+    const [y, m, d] = dateStr.split("-");
+    return `${y.slice(2)}${m}${d}`;
 }
 
-
-
-// Throws the image onto the page
-
-function displayAPOD(data) {
-
-    if (!data || !data.date) {
-        app.innerHTML = `
-            <p class="error">
-                ❌ No APOD found for this date.
-            </p>
-        `;
+function renderContent(payload) {
+    if (!payload || !payload.date) {
+        app.innerHTML = `<p class="error"> No APOD data found for this selection.</p>`;
         return;
     }
 
-    let media = "";
+    let mediaHtml = "";
 
-    if (data.media_type == "video" && (data.url.includes("youtube") || data.url.includes("youtu.be"))) {
-        let videoUrl = data.url;
-        if (videoUrl.includes("watch?v=")) {
-            videoUrl = videoUrl.replace("watch?v=", "embed/");
-        } else if (videoUrl.includes("youtu.be/")) {
-            videoUrl = videoUrl.replace("youtu.be/", "www.youtube.com/embed/");
+    if (payload.media_type === "video" && (payload.url.includes("youtube") || payload.url.includes("youtu.be"))) {
+        let embedLink = payload.url;
+        if (embedLink.includes("watch?v=")) {
+            embedLink = embedLink.replace("watch?v=", "embed/");
+        } else if (embedLink.includes("youtu.be/")) {
+            embedLink = embedLink.replace("youtu.be/", "www.youtube.com/embed/");
         }
 
-        media = `
+        mediaHtml = `
             <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 20px 0;">
-                <iframe
-                    src="${videoUrl}"
-                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
-                    allowfullscreen>
-                </iframe>
+                <iframe src="${embedLink}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" allowfullscreen></iframe>
             </div>
         `;
-    } else if (data.media_type === "audio" || data.media_type === "other" || data.media_type === "video") {
-        media = `
+    } else if (payload.media_type === "audio" || payload.media_type === "other") {
+        mediaHtml = `
             <div style="text-align: center; padding: 30px; background: rgba(255,255,255,0.05); border-radius: 8px; margin: 20px 0;">
-                 <p style="font-size: 1.2rem; margin-bottom: 15px;"> This day features a space audio / sonification file.</p>
-                 <a href="${data.url}" target="_blank" style="color: #61dafb; text-decoration: underline;">Listen to Audio / Open NASA Link</a>
+                 <p style="font-size: 1.2rem; margin-bottom: 15px;"> This entry features an audio or sonification file.</p>
+                 <a href="${payload.url}" target="_blank" style="color: #61dafb; text-decoration: underline;">Listen / Open NASA Link</a>
+            </div>
+        `;
+    } else if (payload.media_type === "video") {
+        mediaHtml = `
+            <div style="text-align: center; padding: 30px; background: rgba(255,255,255,0.05); border-radius:8px; margin: 20px 0;">
+                 <p style="font-size: 1.2rem; margin-bottom: 15px;"> This entry features a direct video file.</p>
+                 <a href="${payload.url}" target="_blank" style="color: #61dafb; text-decoration: underline;">Watch Video / Open NASA Link</a>
             </div>
         `;
     } else {
-        const imageUrl = data.hdurl || data.url;
-        if (imageUrl) {
-            media = `<img src="${imageUrl}" alt="${data.alt || data.title}" style="max-width: 100%; border-radius: 8px;">`;
-        } else {
-            media = `<p>No visual media available for this APOD date.</p>`;
+        const visual = payload.hdurl || payload.url;
+        mediaHtml = visual ? `<img src="${visual}" alt="${payload.alt || payload.title}" style="max-width: 100%; border-radius: 8px;">` : `<p>No visual media available.</p>`;
+    }
+    
+    app.innerHTML = `
+        <h1>${payload.title}</h1>
+        ${mediaHtml}
+        <p>${payload.explanation || ""}</p>
+        <p><strong>Date:</strong> ${payload.date}</p>
+    `;
+}
+
+async function fetchAPOD(targetDate) {
+    app.innerHTML = `<p> Loading space data...</p>`;
+
+    try {
+        const path = formatApiDate(targetDate);
+        const endpoint = `${BASE_API}/${path}`;
+
+        const res = await fetch(endpoint, { cache: "no-store" });
+
+        if (!res.ok) {
+            if (res.status === 404) {
+                throw new Error("NASA hasn't published an update for this date yet. Try picking an earlier day!");
+            }
+            throw new Error(`Server returned status ${res.status}`);
         }
         
-           
-    }
-
-    app.innerHTML = `
-        <h1>${data.title}</h1>
-
-        ${media}
-
-        <p>${data.explanation || ""}</p>
-
-        <p>
-            <strong>Date:</strong> ${data.date}
-        </p>
-    `;
-}
-
-
-// Talks to NASA's server to grab data for specific day
-
-
-async function fetchAPOD(selectedDate) {
-
-    app.innerHTML = `
-        <p>🚀 Loading NASA image...</p>
-    `;
-
-    try {
-
-        const nasaDate = convertToNASAPath(selectedDate);
-
-        const url = `${API_URL}/${nasaDate}`;
-
-        console.log("Selected date:", selectedDate);
-        console.log("NASA URL:", url);
-
-        const response = await fetch(url, {
-            cache: "no-store"
-        });
-
-        if (!response.ok) {
-            throw new Error(`NASA returned ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        console.log("NASA response:", data);
-
+        const data = await res.json();
         if (!data.date) {
-            throw new Error("No APOD found for this date.");
+            throw new Error("Incomplete record returned from server.");
         }
-
-        displayAPOD(data);
-
-    } catch (error) {
-
-        console.error("Date error:", error);
-
-        app.innerHTML = `
-            <p class="error">
-                ❌ ${error.message}
-            </p>
-        `;
+        
+        renderContent(data);
+    } catch (err) {
+        app.innerHTML = `<p class="error"> ${err.message}</p>`;
     }
 }
 
+function generateRandomDate() {
+    const startTimestamp = new Date("1995-06-16T00:00:00").getTime();
+    const nowTimeStamp = Date.now();
+    const randomTime = startTimestamp + Math.random() * (nowTimestamp - startTimestamp);
+    const randObj = new Date(randomTime);
 
-
-// Rolls a random date between back when NASA started and today
-
-
-function getRandomDate() {
-
-    // APOD started on June 16, 1995
-    const start = new Date("1995-06-16T00:00:00");
-
-    const end = new Date();
-
-    const difference =
-        end.getTime() - start.getTime();
-
-    const randomTime =
-        start.getTime() +
-        Math.random() * difference;
-
-    const randomDate = new Date(randomTime);
-
-    const year = randomDate.getFullYear();
-    const month = String(
-        randomDate.getMonth() + 1
-    ).padStart(2, "0");
-
-    const day = String(
-        randomDate.getDate()
-    ).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
+    const y = randObj.getFullYear();
+    const m = String(randObj.getMonth() + 1).padStart(2, "0");
+    const d = String(randObj.getDate()).padStart(2, "0"); 
+    return `${y}-${m}-${d}`;
 }
-
-
-// Stops spam-clicking the random button while it loads
 
 async function fetchRandomAPOD() {
-
-    // Prevent multiple clicks while loading
-    if (randomLoading) {
-        return;
-    }
-
-    randomLoading = true;
+    if (isBusy) return;
+    isBusy = true;
     randomBtn.disabled = true;
 
-    app.innerHTML = `
-        <p>🎲 Finding a different NASA image...</p>
-    `;
+    app.innerHTML = `<p> Rolling a random space date...</p>`;
 
     try {
+        let found = null;
+        let tries = 0;
 
-        let attempts = 0;
-        let apod = null;
+        while (!found && tries < 10) {
+            tries++;
+            const candidate = generateRandomDate();
 
-        while (!apod && attempts < 10) {
+            if (seenRolls.has(candidate)) continue;
 
-            attempts++;
+            const res = await fetch(`${BASE_API}/${formatApiDate(candidate)}`, { cache: "no-store" });
+            if (!res.ok) continue;
 
-            const randomDate = getRandomDate();
-
-            // Don't immediately show a date we've already used
-            if (usedRandomDates.has(randomDate)) {
-                continue;
-            }
-
-            const nasaDate = convertToNASAPath(randomDate);
-
-            const url = `${API_URL}/${nasaDate}`;
-
-            console.log(
-                `Random attempt ${attempts}:`,
-                randomDate
-            );
-
-            const response = await fetch(url, {
-                cache: "no-store"
-            });
-
-            if (!response.ok) {
-                continue;
-            }
-
-            const data = await response.json();
-
-            // Only accept actual images
-            if (
-                data &&
-                data.date &&
-                data.media_type === "image" &&
-                data.hdurl
-            ) {
-
-                apod = data;
-
-                usedRandomDates.add(data.date);
+            const info = await res.json();
+            if (info && info.date && info.media_type === "image" && info.hdurl) {
+                found = info;
+                seenRolls.add(info.date);
             }
         }
-
-
-        // If we somehow couldn't find one
-        if (!apod) {
-
-            // Start a fresh random history
-            usedRandomDates.clear();
-
-            throw new Error(
-                "Could not find a new random NASA image. Try again."
-            );
+        
+        if (!found) {
+            seenRolls.clear();
+            throw new Error("Could not pull a unique random image. Try clicking again.");
         }
-
-
-        // Change date picker
-        datePicker.value = apod.date;
-
-        // Display image
-        displayAPOD(apod);
-
-        console.log(
-            "NEW RANDOM IMAGE:",
-            apod.date,
-            apod.title
-        );
-
-    } catch (error) {
-
-        console.error("Random error:", error);
-
-        app.innerHTML = `
-            <p class="error">
-                ❌ ${error.message}
-            </p>
-        `;
-
+        
+        datePicker.value = found.date;
+        renderContent(found);
+    } catch (err) {
+        app.innerHTML = `<p class="error"> ${err.message}</p>`;
     } finally {
-
-        randomLoading = false;
+        isBusy = false;
         randomBtn.disabled = false;
     }
 }
 
-
-// Handles when someone picks a date from the calender
-
-
-const today = getToday();
-
+const todaysDate = getCurrentDate();
 datePicker.min = "1995-06-16";
-datePicker.max = today;
-datePicker.value = today;
+datePicker.max = todaysDate;
+datePicker.value = todaysDate;
 
-
-// When date changes
 datePicker.addEventListener("change", function () {
-
-    const selectedDate = this.value;
-
-    console.log(
-        "DATE PICKER CHANGED:",
-        selectedDate
-    );
-
-    if (selectedDate) {
-        fetchAPOD(selectedDate);
+    if (this.value) {
+        fetchAPOD(this.value);
     }
 });
 
+randomBtn.addEventListener("click", fetchRandomAPOD);
 
-// Random button
-randomBtn.addEventListener(
-    "click",
-    fetchRandomAPOD
-);
-
-
-// Load today's APOD
-fetchAPOD(today);
-
+fetchAPOD(todaysDate);
