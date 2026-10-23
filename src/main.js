@@ -97,7 +97,7 @@ async function fetchAPOD(targetDate) {
 
 function generateRandomDate() {
     const startTimestamp = new Date("1995-06-16T00:00:00").getTime();
-    const nowTimeStamp = Date.now();
+    const nowTimestamp = Date.now();
     const randomTime = startTimestamp + Math.random() * (nowTimestamp - startTimestamp);
     const randObj = new Date(randomTime);
 
