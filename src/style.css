@@ -1,4 +1,3 @@
-/* Base Page Styles */
 body {
     margin: 0;
     min-height: 100vh;
@@ -10,33 +9,22 @@ body {
     align-items: center;
     padding: 20px;
     box-sizing: border-box;
-
     background-image:
       radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
       radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
       radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
       radial-gradient(2px 2px at 160px 120px, #ffddaa, rgba(0,0,0,0)),
       radial-gradient(1.5px 1.5px at 230px 190px, #aaddff, rgba(0,0,0,0));
-
     background-repeat: repeat;
     background-size: 300px 300px;
     animation: twinkle 4s infinite alternate ease-in-out;
 }
 
-
-/* Star Twinkle Animation */
 @keyframes twinkle {
-    0% {
-        opacity: 0.6;
-    }
-
-    100% {
-        opacity: 1;
-    }
+     0% { opacity: 0.6; }
+     100% { opacity: 1; }
 }
 
-
-/* Main Heading */
 h1 {
     font-family: 'Oswald', 'Orbitron', sans-serif;
     text-align: center;
@@ -44,8 +32,6 @@ h1 {
     text-shadow: 0 0 10px rgba(97, 218, 251, 0.5);
 }
 
-
-/* Description Text */
 p {
     font-family: 'Black Ops One', sans-serif;
     max-width: 900px;
@@ -57,8 +43,6 @@ p {
     box-sizing: border-box;
 }
 
-
-/* Date Picker */
 #datepicker {
     padding: 8px 14px;
     font-size: 1rem;
@@ -74,14 +58,10 @@ p {
     margin-bottom: 20px;
 }
 
-
-/* Date Picker Hover */
 #datepicker:hover {
-    box-shadow: 0 0 15px rgba(97, 218, 251, 0.6);
+    box-shadow: 0 0 15px rgba( 97, 218, 251, 0.6);
 }
 
-
-/* NASA Image / Video */
 #app img,
 #app iframe,
 #app video {
@@ -96,14 +76,10 @@ p {
     box-sizing: border-box;
 }
 
-
-/* Image Hover */
 #app img:hover {
     transform: scale(1.01);
 }
 
-
-/* Main App Container */
 #app {
     width: 100%;
     max-width: 1100px;
@@ -113,15 +89,11 @@ p {
     padding: 0 30px;
 }
 
-
-/* App Heading */
 #app h1 {
     text-align: center;
     margin: 25px auto;
 }
 
-
-/* Controls */
 .controls {
     display: flex;
     align-items: center;
@@ -131,8 +103,6 @@ p {
     margin-bottom: 20px;
 }
 
-
-/* Random NASA Button */
 #randomBtn {
     padding: 8px 14px;
     font-size: 1rem;
@@ -146,29 +116,21 @@ p {
     transition: all 0.3s ease;
 }
 
-
-/* Random Button Hover */
 #randomBtn:hover {
     background-color: #61dafb;
     color: #0b0d19;
     box-shadow: 0 0 15px rgba(97, 218, 251, 0.6);
 }
 
-
-/* Random Button Click */
 #randomBtn:active {
     transform: scale(0.97);
 }
 
-
-/* Disabled Random Button */
 #randomBtn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-
-/* Error Message */
 .error {
     color: #ff3333;
     text-align: center;
@@ -176,8 +138,6 @@ p {
     font-weight: bold;
 }
 
-
-/* Red / White Side Borders */
 body::before,
 body::after {
     content: '';
@@ -189,98 +149,60 @@ body::after {
     background-color: #ff007f;
 }
 
-
-/* Left Border */
 body::before {
     left: 0;
-
-    clip-path: polygon(
-        0 0,
-        100% 0,
-        100% 100%,
-        0 100%
-    );
-
-    background-image: repeating-linear-gradient(
-        45deg,
-        #ff007f,
-        #ff007f 10px,
-        #f5f5f5 10px,
-        #f5f5f5 20px
-    );
+    clip-path: polygon(0 0,100% 0, 100% 100%, 0 100%);
+    background-image: repeating-linear-gradient(45deg, #ff007f, #ff007f 10px, #f5f5f5 10px, #f5f5f5 20px);
 }
 
-
-/* Right Border */
 body::after {
     right: 0;
-
-    clip-path: polygon(
-        0 0,
-        100% 0,
-        100% 100%,
-        0 100%
-    );
-
-    background-image: repeating-linear-gradient(
-        45deg,
-        #ff007f,
-        #ff007f 10px,
-        #f5f5f5 10px,
-        #f5f5f5 20px
-    );
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    background-image: repeating-linear-gradient(45deg, #ff007f, #ff007f 10px, #f5f5f5 10px, #f5f5f5 20px);
 }
 
-
-/* Mobile Screen */
 @media (max-width: 600px) {
-
     body::before,
     body::after {
         display: none;
     }
-
     #app {
         padding: 0 15px;
     }
-
     p {
         width: 100%;
         font-size: 14px;
     }
 }
+    
+.toast-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #1a1636;
+    color: #a8daef;
+    border: 1px solid #a8daef;
+    padding: 12px 18px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+}
 
-    /* Greeting Popup / Toast */
-    .toast-popup {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background-color: #1a1636;
-        color: #a8daef;
-        border: 1px solid #a8daef;
-        padding: 12px 18px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-family: 'Orbitron', sans-serif;
-        font-size: 14px;
-    }
+#close-toast {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
 
-    #close-toast {
-        background: none;
-        border: none;
-        color: #ffffff;
-        font-size: 18px;
-        cursor: pointer;
-        padding: 0;
-        line-height: 1;
-    }
-
-    #close-toast:hover {
-        color: #a8daef;
-    }
-
-
+#close-toast:hover {
+    color: #a8daef;
+}
