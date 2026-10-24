@@ -56,22 +56,34 @@ function renderContent(payload) {
             </div>
         `;
     } else {
-        let visual = payload.hdurl;
+        let visual = payload.hdurl || payload.url;
 
-        if (visual) {
+        const isInvalidAsset = visual && (
+            visual.includes("news-thumbnail") ||
+            visual.includes("nasa-logo") 
+        );
+
+        if (visual && !isInvalidAsset) {
             if (visual.startsWith("http://")) {
                 visual = visual.replace("http://", "https://");
-            } 
-            mediaHtml = `<img src="${visual}" alt="${payload.title || 'Space Image'}" style="max-width: 100%; border-radius: 8px;">`;
+            }
+             mediaHtml = `
+                 <img src="${visual}" alt="${payload.title || 'Space Image'}" style="max-width: 100%; border-radius: 8px;"
+                      onerror="this.style.display='none'; document.getElementById('fallback-box').style.display='block';">
+                <div style="display: none; text-align: center; padding: 30px; background: rgba(255,255,255,0.05); border-radius: 8px; margin: 20px 0;">
+                     <p style="font-size: 1.2rem; margin-bottom: 15px;">Direct image access restricted by NASA server for this date.</p>
+                     <a href="${payload.url}" target="_blank" style="color: #61dafb; text-decoration: underline;">Open Original NASA Page</a>
+                </div>
+            `;
         } else {
             mediaHtml = `
                 <div style="text-align: center; padding: 30px; background: rgba(255,255,255,0.05); border-radius: 8px; margin: 20px 0;">
                      <p style="font-size: 1.2rem; margin-bottom: 15px;">Direct image file not available for this date.</p>
-                     <a hhref="${payload.url}"
+                     <a href="${payload.url}" target="_blank" style="color: #61dafb; text-decoration: underline;">Open Original NASA Page</a>
                 </div>
             `;
         }
-     }
+    }
     
     
     app.innerHTML = `
