@@ -56,8 +56,12 @@ function renderContent(payload) {
             </div>
         `;
     } else {
-        const visual = payload.hdurl || payload.url;
-        mediaHtml = visual ? `<img src="${visual}" alt="${payload.alt || payload.title}" style="max-width: 100%; border-radius: 8px;">` : `<p>No visual media available.</p>`;
+        let visual = payload.hdurl || payload.url;
+        if (visual && visual.startsWith("http://")) {
+            visual = visual.replace("http://", "https://");
+        }
+        
+        mediaHtml = visual ? `<img src="${visual}" alt="${payload.title || 'Space Image'}" style="max-width: 100%; border-radius: 8px;">` : `<p>No visual media available.</p>`;
     }
     
     app.innerHTML = `
