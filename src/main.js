@@ -56,13 +56,23 @@ function renderContent(payload) {
             </div>
         `;
     } else {
-        let visual = payload.hdurl || payload.url;
-        if (visual && visual.startsWith("http://")) {
-            visual = visual.replace("http://", "https://");
+        let visual = payload.hdurl;
+
+        if (visual) {
+            if (visual.startsWith("http://")) {
+                visual = visual.replace("http://", "https://");
+            } 
+            mediaHtml = `<img src="${visual}" alt="${payload.title || 'Space Image'}" style="max-width: 100%; border-radius: 8px;">`;
+        } else {
+            mediaHtml = `
+                <div style="text-align: center; padding: 30px; background: rgba(255,255,255,0.05); border-radius: 8px; margin: 20px 0;">
+                     <p style="font-size: 1.2rem; margin-bottom: 15px;">Direct image file not available for this date.</p>
+                     <a hhref="${payload.url}"
+                </div>
+            `;
         }
-        
-        mediaHtml = visual ? `<img src="${visual}" alt="${payload.title || 'Space Image'}" style="max-width: 100%; border-radius: 8px;">` : `<p>No visual media available.</p>`;
-    }
+     }
+    
     
     app.innerHTML = `
         <h1>${payload.title}</h1>
