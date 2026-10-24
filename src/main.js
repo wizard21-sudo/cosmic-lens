@@ -69,7 +69,7 @@ function renderContent(payload) {
             }
              mediaHtml = `
                  <img src="${visual}" alt="${payload.title || 'Space Image'}" style="max-width: 100%; border-radius: 8px;"
-                      onerror="this.style.display='none'; document.getElementById('fallback-box').style.display='block';">
+                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <div style="display: none; text-align: center; padding: 30px; background: rgba(255,255,255,0.05); border-radius: 8px; margin: 20px 0;">
                      <p style="font-size: 1.2rem; margin-bottom: 15px;">Direct image access restricted by NASA server for this date.</p>
                      <a href="${payload.url}" target="_blank" style="color: #61dafb; text-decoration: underline;">Open Original NASA Page</a>
